@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Overview | Orion AWS Inventory</title>
+    <link rel="icon" type="image/png" href="assets/branding/favicon.png">
+    <link rel="stylesheet" href="assets/site.css">
+    <script defer src="assets/jquery.min.js"></script>
+    <script defer src="assets/data.js"></script>
+    <script defer src="assets/worksheet-data.js"></script>
+    <script defer src="assets/architecture-data.js"></script>
+    <script defer src="assets/site.js"></script>
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-head">
+            <a class="brand" href="index.html">
+                <span class="brand-logo"><img src="assets/branding/NDS_Logo.png" alt="Newdream Data Systems" width="140" height="70"></span>
+                <span>Orion <small>AWS Inventory</small></span>
+            </a>
+            <button id="menu-close" class="icon-button menu-close" type="button" aria-label="Close menu" data-icon="close"></button>
+        </div>
+        <nav aria-label="Main navigation">
+                <a href="index.html" data-icon="overview" aria-current="page">Overview</a>
+                <a href="inventory.html" data-icon="inventory">Inventory</a>
+                <a href="architecture.html" data-icon="architecture">Architecture</a>
+                <a href="sources.html" data-icon="sources">Sources</a>
+        </nav>
+    </aside>
+    <div class="menu-shade" id="menu-shade" hidden></div>
+    <div class="workspace">
+        <header class="topbar">
+            <div class="topbar-location">
+                <button type="button" id="menu-open" class="icon-button menu-open" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar" data-icon="menu"></button>
+                <span class="mobile-brand">Orion AWS Inventory</span>
+                <span class="topbar-parent">AWS Inventory</span>
+                <span class="breadcrumb-divider" aria-hidden="true">/</span>
+                <span class="topbar-page">Overview</span>
+            </div>
+            <a class="snapshot" href="sources.html" data-icon="sources">Workbook snapshots</a>
+        </header>
+        <main id="main" tabindex="-1">
+        <div class="pagehead">
+            <h1>AWS inventory overview</h1>
+            <p>See how Orion’s workbook inventory is distributed and open a service to explore its worksheets.</p>
+        </div>
+        <section id="summary" class="stats" aria-label="Inventory summary"></section>
+        <div class="overview-grid overview-charts">
+            <section class="panel" aria-labelledby="volume-heading">
+                <div class="section-title">
+                    <div><h2 id="volume-heading">Most indexed rows</h2><p>Top AWS services by workbook row count.</p></div>
+                </div>
+                <ol id="service-volume" class="volume-chart" aria-labelledby="volume-heading"></ol>
+            </section>
+            <section class="panel" aria-labelledby="category-heading">
+                <div class="section-title"><div><h2 id="category-heading">Services by category</h2><p>Select a category to browse its services.</p></div></div>
+                <div class="category-chart">
+                    <div class="category-ring" id="category-ring" aria-hidden="true">
+                        <div><strong id="category-total"></strong><span>services</span></div>
+                    </div>
+                    <ul id="category-legend" class="category-legend"></ul>
+                </div>
+            </section>
+        </div>
+        <div class="overview-grid overview-browse">
+            <section class="panel service-directory" id="service-coverage" aria-labelledby="service-heading">
+                <div class="section-title">
+                    <div><h2 id="service-heading" tabindex="-1">Browse AWS services</h2><p id="directory-count" role="status"></p></div>
+                </div>
+                <div id="category-filters" class="category-filters" role="group" aria-label="Filter services by category"></div>
+                <ul id="service-directory" class="service-cards"></ul>
+            </section>
+            <aside class="overview-aside" aria-label="Coverage and workflows">
+                <section class="panel" aria-labelledby="evidence-heading">
+                    <div class="section-title"><div><h2 id="evidence-heading">Coverage exceptions</h2><p>Scope and access gaps in the snapshots.</p></div></div>
+                    <ul id="exceptions" class="overview-list"></ul>
+                </section>
+                <section class="panel" aria-labelledby="application-heading">
+                    <div class="section-title"><div><h2 id="application-heading">Application workflows</h2><p>Trace a request through AWS.</p></div></div>
+                    <ul id="featured-flows" class="overview-list"></ul>
+                    <div class="panel-footer"><a href="architecture.html">All workflows</a></div>
+                </section>
+            </aside>
+        </div>
+        </main>
+    </div>
+</body>
+</html>

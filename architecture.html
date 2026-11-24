@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Architecture | Orion AWS Inventory</title>
+    <link rel="icon" type="image/png" href="assets/branding/favicon.png">
+    <link rel="stylesheet" href="assets/site.css">
+    <link rel="stylesheet" href="assets/architecture.css">
+    <script defer src="assets/jquery.min.js"></script>
+    <script defer src="assets/data.js"></script>
+    <script defer src="assets/worksheet-data.js"></script>
+    <script defer src="assets/site.js"></script>
+    <script defer src="assets/architecture-data.js"></script>
+    <script defer src="assets/architecture.js"></script>
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-head">
+            <a class="brand" href="index.html">
+                <span class="brand-logo"><img src="assets/branding/NDS_Logo.png" alt="Newdream Data Systems" width="140" height="70"></span>
+                <span>Orion <small>AWS Inventory</small></span>
+            </a>
+            <button id="menu-close" class="icon-button menu-close" type="button" aria-label="Close menu" data-icon="close"></button>
+        </div>
+        <nav aria-label="Main navigation">
+                <a href="index.html" data-icon="overview">Overview</a>
+                <a href="inventory.html" data-icon="inventory">Inventory</a>
+                <a href="architecture.html" data-icon="architecture" aria-current="page">Architecture</a>
+                <a href="sources.html" data-icon="sources">Sources</a>
+        </nav>
+    </aside>
+    <div class="menu-shade" id="menu-shade" hidden></div>
+    <div class="workspace">
+        <header class="topbar">
+            <div class="topbar-location">
+                <button type="button" id="menu-open" class="icon-button menu-open" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar" data-icon="menu"></button>
+                <span class="mobile-brand">Orion AWS Inventory</span>
+                <span class="topbar-parent">AWS Inventory</span>
+                <span class="breadcrumb-divider" aria-hidden="true">/</span>
+                <span class="topbar-page">Architecture</span>
+            </div>
+            <a class="snapshot" href="sources.html" data-icon="sources">Workbook snapshots</a>
+        </header>
+        <main id="main" tabindex="-1">
+        <div class="pagehead">
+            <h1>Architecture &amp; Flow</h1>
+            <p>Follow Orion’s AWS connections from the workbook evidence.</p>
+        </div>
+        <section class="panel flow-panel" id="flow-focus" aria-labelledby="flow-title">
+            <div class="flow-toolbar">
+                <label class="flow-picker">Workflow<select id="flow-catalog"></select></label>
+                <label class="flow-picker" id="environment-picker">Environment<select id="flow-environment"></select></label>
+                <label class="flow-picker" id="branch-picker">Path<select id="flow-branch"></select></label>
+            </div>
+            <div class="flow-canvas">
+                <div class="walk-head">
+                    <div><h2 id="flow-title"></h2><p id="flow-caption"></p></div>
+                    <div class="walk-controls" role="group" aria-label="Playback and view controls">
+                      <div class="walk-control-group">
+                        <button class="button walk-play" id="walk-play" type="button">Play</button>
+                        <button class="button" id="walk-prev" type="button" title="Previous step" aria-label="Previous step">←</button>
+                        <output id="walk-counter" aria-label="Step"></output>
+                        <button class="button" id="walk-next" type="button" title="Next step" aria-label="Next step">→</button>
+                        <button class="button" id="walk-replay" type="button" title="Replay from the first step" aria-label="Replay">↺</button>
+                      </div>
+                      <div class="walk-control-group">
+                        <button class="button" id="walk-fit" type="button" title="Fit the diagram to the canvas">Fit</button>
+                        <button class="button" id="walk-out" type="button" title="Zoom out" aria-label="Zoom out">−</button>
+                        <button class="button" id="walk-in" type="button" title="Zoom in" aria-label="Zoom in">+</button>
+                        <button class="button" id="flow-expand" type="button" title="Open full-screen diagram" aria-label="Open full-screen diagram">⛶</button>
+                        <button class="button" id="walk-narration" type="button" aria-pressed="false" title="Use an offline voice for spoken narration" hidden>Narration</button>
+                      </div>
+                    </div>
+                </div>
+                <div class="walk-explanation" aria-labelledby="walk-label">
+                    <strong id="walk-label">Inventory walkthrough</strong>
+                    <div id="story-scene" class="story-scene" aria-hidden="true">
+                        <div id="story-from" class="story-actor"></div>
+                        <div class="story-crossing" id="story-crossing">
+                            <span id="story-cue" class="story-cue"></span>
+                            <span class="story-rail"><span class="story-trail"></span><span id="story-packet" class="story-packet"><i><span class="packet-face"></span><span class="packet-feet"></span></i></span></span>
+                        </div>
+                        <div id="story-to" class="story-actor"></div>
+                    </div>
+                    <p id="walk-step" role="status"></p>
+                    <p id="story-reset-note" class="story-reset-note" hidden>Walkthrough complete. Returning to step 1.</p>
+                    <details class="walk-step-sources"><summary>Step evidence</summary><div id="walk-evidence" class="walk-evidence"></div></details>
+                </div>
+                <div id="walk-viewport" class="walk-viewport" tabindex="0" aria-label="Scrollable architecture canvas"><div id="diagrams"></div></div>
+                <details class="walk-overlays" id="walk-drilldown" hidden><summary id="walk-drilldown-title"></summary><ul id="walk-records"></ul></details>
+                <p class="walk-foot">Playback shows recorded evidence and sends no AWS requests.</p>
+            </div>
+        </section>
+        <details class="panel walk-overlays standalone-connections" id="walk-overlays" hidden>
+            <summary>Related connections</summary>
+            <ul id="walk-related"></ul>
+        </details>
+        <section class="panel connectivity" aria-labelledby="connectivity-heading">
+            <div class="section-title"><div><h2 id="connectivity-heading">All-Service Connectivity</h2><p>Find routing, dependencies, coverage, and open verification items by service.</p></div><span id="connectivity-count" class="count-label" role="status"></span></div>
+            <div class="connectivity-controls">
+                <label>Search connections<input id="connectivity-search" type="search" placeholder="Service, resource, or relationship"></label>
+                <label>Service<select id="connectivity-service"></select></label>
+                <label>Evidence status<select id="connectivity-status"></select></label>
+            </div>
+            <div class="table-wrap connectivity-scroll" tabindex="0" role="region" aria-label="All-service connectivity table">
+                <table aria-labelledby="connectivity-heading"><thead><tr><th scope="col">From</th><th scope="col">Relationship</th><th scope="col">To</th><th scope="col">Environment or region</th><th scope="col">Evidence status</th><th scope="col">Source</th></tr></thead><tbody id="connectivity-rows"></tbody></table>
+            </div>
+            <nav class="pager" aria-label="Connection pages"><span id="connectivity-range"></span><div class="page-buttons"><button class="button" id="connectivity-prev" type="button">Previous</button><button class="button" id="connectivity-next" type="button">Next</button></div></nav>
+        </section>
+        <section class="panel connectivity" aria-labelledby="gaps-heading">
+            <div class="section-title"><div><h2 id="gaps-heading">Open verification checklist</h2><p>Evidence needed to confirm connections excluded from playback.</p></div></div>
+            <ul id="verification-gaps" class="verification-gaps"></ul>
+        </section>
+        <dialog id="flow-expanded-view" class="flow-expanded-view" aria-labelledby="flow-title"></dialog>
+        </main>
+    </div>
+</body>
+</html>

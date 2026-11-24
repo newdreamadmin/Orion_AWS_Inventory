@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inventory | Orion AWS Inventory</title>
+    <link rel="icon" type="image/png" href="assets/branding/favicon.png">
+    <link rel="stylesheet" href="assets/site.css">
+    <script defer src="assets/jquery.min.js"></script>
+    <script defer src="assets/data.js"></script>
+    <script defer src="assets/worksheet-data.js"></script>
+    <script defer src="assets/site.js"></script>
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-head">
+            <a class="brand" href="index.html">
+                <span class="brand-logo"><img src="assets/branding/NDS_Logo.png" alt="Newdream Data Systems" width="140" height="70"></span>
+                <span>Orion <small>AWS Inventory</small></span>
+            </a>
+            <button id="menu-close" class="icon-button menu-close" type="button" aria-label="Close menu" data-icon="close"></button>
+        </div>
+        <nav aria-label="Main navigation">
+                <a href="index.html" data-icon="overview">Overview</a>
+                <a href="inventory.html" data-icon="inventory" aria-current="page">Inventory</a>
+                <a href="architecture.html" data-icon="architecture">Architecture</a>
+                <a href="sources.html" data-icon="sources">Sources</a>
+        </nav>
+    </aside>
+    <div class="menu-shade" id="menu-shade" hidden></div>
+    <div class="workspace">
+        <header class="topbar">
+            <div class="topbar-location">
+                <button type="button" id="menu-open" class="icon-button menu-open" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar" data-icon="menu"></button>
+                <span class="mobile-brand">Orion AWS Inventory</span>
+                <span class="topbar-parent">AWS Inventory</span>
+                <span class="breadcrumb-divider" aria-hidden="true">/</span>
+                <span class="topbar-page">Inventory</span>
+            </div>
+            <a class="snapshot" href="sources.html" data-icon="sources">Workbook snapshots</a>
+        </header>
+        <main id="main" tabindex="-1">
+        <div class="pagehead">
+            <h1>Inventory</h1>
+            <p>Browse the workbook worksheets for each AWS service.</p>
+        </div>
+        <div class="panel inventory-selectors" role="group" aria-label="Choose inventory worksheet">
+            <label>Service<select id="service"><option value="">Select a service</option></select></label>
+            <label>Worksheet<select id="sheet" disabled><option value="">Select a worksheet</option></select></label>
+        </div>
+        <section class="panel inventory-panel" aria-label="Worksheet inventory">
+            <div class="section-title worksheet-title" id="worksheet-title" hidden>
+                <div><h2 id="inventory-heading"></h2><p id="table-hint"></p></div>
+                <span id="result" class="count-label" role="status"></span>
+            </div>
+            <div class="worksheet-search" id="worksheet-search" hidden>
+                <label>Search this worksheet<input id="worksheet-query" type="search" placeholder="Search worksheet rows"></label>
+            </div>
+            <div id="inventory-tables"></div>
+            <div class="empty-state" id="empty-inventory" role="status">
+                <span class="accent-icon accent-compute" data-icon="sources"></span>
+                <strong>Select a service to begin</strong>
+                <p>Its workbook worksheets will appear in the second selector.</p>
+            </div>
+            <nav class="pager" id="inventory-pager" aria-label="Inventory pages" hidden>
+                <span id="page-range"></span>
+                <div class="page-buttons"><button type="button" id="prev" class="button">Previous</button><span id="page-indicator" role="status"></span><button type="button" id="next" class="button">Next</button></div>
+            </nav>
+        </section>
+        <dialog id="resource" aria-labelledby="resource-title">
+            <div class="dialog-body">
+                <div class="detail-top"><span id="resource-service"></span><form method="dialog"><button class="button" autofocus>Close</button></form></div>
+                <h2 id="resource-title"></h2>
+                <div id="resource-evidence"></div>
+                <section class="detail-source" aria-labelledby="source-heading">
+                    <h3 id="source-heading">Source reference</h3><p id="resource-source"></p><a id="resource-worksheet">Browse worksheet records</a>
+                </section>
+                <dl id="resource-meta"></dl>
+            </div>
+        </dialog>
+        </main>
+    </div>
+</body>
+</html>
