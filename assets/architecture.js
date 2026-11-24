@@ -56,13 +56,16 @@
   let cards = [];
   let connectors = [];
   let route;
-  let elapsed = 0;
   let sceneDuration = 3400;
   let spokenText = "";
   let localVoice;
   let narrationOn = false;
   let utterance;
   let waitingForVoice = false;
+  let speechStarted = false;
+  let voiceCompleted = false;
+  let voiceElapsed = 0;
+  let completing = false;
   let resetTimer = 0;
 
   function findLocalVoice() {
@@ -80,26 +83,31 @@
   }
 
   function narrateStep() {
-    if (!narrationOn || !localVoice) return;
+    if (!narrationOn || !localVoice || speechStarted) return;
     cancelSpeech();
     const message = new SpeechSynthesisUtterance(spokenText);
     message.voice = localVoice;
     message.lang = localVoice.lang;
     message.rate = 0.98;
-    const finish = () => {
+    const finish = completed => {
       if (utterance !== message) return;
       waitingForVoice = false;
       utterance = undefined;
+      voiceCompleted = completed;
+      drawControls();
     };
-    message.onend = finish;
-    message.onerror = finish;
+    message.onend = () => finish(true);
+    message.onerror = () => finish(false);
     utterance = message;
     waitingForVoice = true;
+    speechStarted = true;
+    voiceElapsed = 0;
     try {
       speech.speak(message);
     } catch {
-      finish();
+      finish(false);
     }
+    drawControls();
   }
 
   function inventoryLink(source) {
@@ -213,7 +221,7 @@
 
   function drawPulse() {
     story.style.setProperty("--story-progress", reduceMotion.matches ? 0 : progress);
-    story.classList.toggle("is-receiving", !reduceMotion.matches && running && progress >= 0.76);
+    story.classList.toggle("is-receiving", !reduceMotion.matches && running && !waitingForVoice && progress >= 0.76);
     for (const [index, connector] of connectors.entries()) {
       connector.classList.toggle("in-motion", index === active && progress > 0 && !reduceMotion.matches);
       connector.style.setProperty("--progress", index === active ? progress : 0);
@@ -225,7 +233,8 @@
     $("walk-play").title = running ? "Pause playback" : "Play inventory walkthrough";
     $("walk-prev").disabled = active === 0 && progress === 0;
     $("walk-next").disabled = active === cards.length - 1;
-    story.classList.toggle("is-playing", running);
+    story.classList.toggle("is-playing", running && !waitingForVoice);
+    story.classList.toggle("is-narrating", running && waitingForVoice);
   }
 
   function drawStory(node, ended) {
@@ -279,6 +288,8 @@
     const action = incoming ? handoff(incoming, node) :
       "Start at " + node.label + ".";
     spokenText = action + (ended ? " " + selected.outcome : "");
+    speechStarted = false;
+    voiceCompleted = false;
     sceneDuration = Math.min(7900, Math.max(3000, 1150 + spokenText.split(/\s+/).length * 240));
     $("walk-step").textContent = "Step " + (active + 1) + " of " + cards.length + " — " + spokenText;
     drawStory(node, ended);
@@ -307,29 +318,48 @@
       clearTimeout(resetTimer);
       resetTimer = 0;
       progress = 0;
-      elapsed = 0;
+      completing = false;
       cancelSpeech();
     }
   }
 
+  function finishPlayback() {
+    stop(true);
+    story.classList.add("is-finished");
+    $("story-reset-note").hidden = false;
+    drawPulse();
+    drawControls();
+    resetTimer = setTimeout(() => jump(0), 2200);
+  }
+
   function tick(now) {
-    elapsed += last ? Math.min(100, now - last) : 0;
-    progress = Math.min(1, elapsed / sceneDuration);
+    const delta = last ? Math.min(100, now - last) : 0;
     last = now;
-    if (progress === 1 && (!waitingForVoice || elapsed >= sceneDuration + 9000)) {
-      progress = 0;
-      elapsed = 0;
-      active++;
-      if (active === cards.length - 1) {
-        stop(true);
-        drawStep(true);
-        story.classList.add("is-finished");
-        $("story-reset-note").hidden = false;
-        resetTimer = setTimeout(() => jump(0), 2200);
+    if (waitingForVoice) {
+      voiceElapsed += delta;
+      // Recover if an installed voice never reports either completion or an error.
+      if (voiceElapsed < Math.max(24000, spokenText.length * 160)) {
+        frame = requestAnimationFrame(tick);
         return;
       }
+      cancelSpeech();
+      drawControls();
+    }
+    if (completing) {
+      finishPlayback();
+      return;
+    }
+    progress = Math.min(1, progress + delta / (voiceCompleted ? 1350 : sceneDuration));
+    if (progress === 1) {
+      progress = 0;
+      active++;
+      completing = active === cards.length - 1;
       drawStep(true);
       narrateStep();
+      if (completing && !waitingForVoice) {
+        finishPlayback();
+        return;
+      }
     } else {
       drawPulse();
     }
@@ -338,11 +368,11 @@
 
   function play() {
     if (cards.length < 2) return;
-    if (active === cards.length - 1) jump(0);
+    if (active === cards.length - 1 && !completing) jump(0);
     running = true;
     last = 0;
     if (utterance && speech.paused) speech.resume();
-    else if (elapsed === 0) narrateStep();
+    else narrateStep();
     drawControls();
     const bounds = viewport.getBoundingClientRect();
     if (bounds.top + 90 > innerHeight || bounds.bottom < 0) {
@@ -447,7 +477,11 @@
     narrationOn = !narrationOn;
     narration.setAttribute("aria-pressed", String(narrationOn));
     narration.textContent = narrationOn ? "Narration on" : "Narration";
-    if (!narrationOn) cancelSpeech();
+    if (!narrationOn) {
+      cancelSpeech();
+      speechStarted = voiceCompleted;
+      drawControls();
+    }
     else if (running) narrateStep();
   });
   speech?.addEventListener("voiceschanged", findLocalVoice);

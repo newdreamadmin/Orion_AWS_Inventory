@@ -49,6 +49,7 @@
 .story-spark { position: absolute; top: -8px; right: -12px; width: 15px; height: 15px; background: #ecaa47; clip-path: polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%); opacity: 0; }
 .story-scene.is-receiving .story-actor:last-child .story-art,
 .story-scene.is-finished .story-actor:first-child .story-art { animation: story-catch .55s cubic-bezier(.21,.64,.4,1.25) both; }
+.story-scene.is-narrating .story-actor:first-child .story-art { animation: story-float .85s ease-in-out infinite alternate; }
 .story-scene.is-receiving .story-actor:last-child .story-spark,
 .story-scene.is-finished .story-actor:first-child .story-spark { animation: story-spark .7s ease-out both; }
 .story-crossing { display: grid; gap: 14px; min-width: 0; justify-items: center; padding-bottom: 5px; }
